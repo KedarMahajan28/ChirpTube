@@ -1,4 +1,4 @@
-class ApirResponse {
+class ApiResponse {
 
     constructor(status, data, message) {
         this.status = status;
@@ -8,4 +8,4 @@ class ApirResponse {
     }   
 }
 
-export { ApirResponse };
+export { ApiResponse };
