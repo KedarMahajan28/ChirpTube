@@ -23,7 +23,7 @@ router.route("/refresh-token").post(refreshAccessToken)
 
 //secured routes
 router.route("/logout").post(verifyJwt,logoutUser)
-routeer.route("/change-password").post(verifyJwt,changeCurrentPassword)
+router.route("/change-password").post(verifyJwt,changeCurrentPassword)
 router.route("/me").get(verifyJwt,getCurrentUser)
 router.route("/update-account").patch(verifyJwt,updateAccountdetails)
 router.route("/update-avatar").patch(verifyJwt,upload.single("avatar"),updateAvatar)

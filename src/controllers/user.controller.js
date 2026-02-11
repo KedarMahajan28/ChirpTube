@@ -26,6 +26,8 @@ const generateAccessandRefreshTokens = async (userId)=>{
       throw new ApiError(500,"Acess/Refresh Token generation failed")
     }
   }
+
+
 const registerUser = asyncHandler(async (req, res) => {
 
   const { fullname, email, username, password } = req.body;
@@ -172,7 +174,7 @@ const refreshAccessToken = asyncHandler(async (req,res)=>{
   try{
   const decodedToken = jwt.verify(incomingRefreshToken, process.env.REFRESH_TOKEN_SECRET)
 
- const user =  User.findById(decodedToken._id)
+ const user = await  User.findById(decodedToken._id)
   if(!user){
     throw new ApiError(404,"User not found")
   }
@@ -185,12 +187,12 @@ const refreshAccessToken = asyncHandler(async (req,res)=>{
     secure : true
   }
 
-const {at,rt} =await  generateAccessandRefreshTokens(user._id)
+const {accessToken,refreshToken} =  await generateAccessandRefreshTokens(user._id)
   return res
         .status(200)
-        .cookie("accessToken",at,options)
-        .cookie("refreshToken",rt,options)
-        .json(new ApiResponse(200, null, at,rt, "Access token refreshed successfully"))
+        .cookie("accessToken",accessToken,options)
+        .cookie("refreshToken",refreshToken,options)
+        .json(new ApiResponse(200, null, accessToken ,refreshToken, "Access token refreshed successfully"))
   }
   catch(error){
     throw new ApiError(401,error?.message || "Invalid refresh token")
@@ -198,6 +200,7 @@ const {at,rt} =await  generateAccessandRefreshTokens(user._id)
 })
 
 const changeCurrentPassword = asyncHandler(async (req,res)=>{
+
   const {currentPassword, newPassword} = req.body
   
   const user = await User.findById(req.user?._id)
@@ -234,7 +237,7 @@ const updateAccountdetails = asyncHandler(async (req,res)=>{
     throw new ApiError(400,"At least one field is required to update")
   }
 
- const user =  User.findByIdAndUpdate(
+ const user =  await User.findByIdAndUpdate(
     req.user?._id,
     {
       $set:{
@@ -254,7 +257,8 @@ const updateAccountdetails = asyncHandler(async (req,res)=>{
 })
 
 const updateAvatar = asyncHandler(async (req,res)=>{
-  avatarLocalPath = req.file?.path
+
+  const avatarLocalPath = req.file?.path
   
   if(!avatarLocalPath){
     throw new ApiError(400,"Avatar file is required")
@@ -281,7 +285,7 @@ return res
 })
 
 const updateCoverImage = asyncHandler(async (req,res)=>{
-  CILocalPath = req.file?.path
+  const CILocalPath = req.file?.path
   
   if(!CILocalPath){
     throw new ApiError(400,"Cover Image file is required")
