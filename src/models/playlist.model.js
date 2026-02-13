@@ -13,7 +13,7 @@ const playlistSchema = new Schema(
                 ref : "Video"
             }
         ],
-        discription : {
+        description : {
             type : String,
             required : true
         },
